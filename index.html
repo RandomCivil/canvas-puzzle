@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>canvas自由拼图</title>
+<link type="text/css" href="html5_puzzle.css" rel="stylesheet" />
+<script src="js/seed-min.js"></script>
+</head>
+<body>
+<div id='html5_puzzle' ms-controller='html5_puzzle' class='ms-controller'>
+	<div id='puzzle_model'>
+		<ul>
+			<li ms-repeat='[1,1,1,1,1,1,1,1,1,1]' ms-click='select_bg($index+1,$event)'>
+				<img ms-attr-src='imgs/small_img/{{$index+1}}.jpg'>
+			</li>
+		</ul>
+	</div
+	><div id='puzzle_canvas'>
+		<div id='canvas_inner'>
+			<canvas id="main_canvas"></canvas>
+			<img ms-repeat='middleware_list' ms-attr-src='el' class='middleware_img'>
+			<div id='canvas_menu'>
+				<a href='javascript:void(0)' id='puzzle_delete'>删除</a><a href='javascript:void(0)' id='puzzle_update'>更改图片</a>
+			</div>
+			<img id="puzzle_bg" src="imgs/1.jpg" width='548' height='411'/>
+			<canvas id='canvas_middleware'></canvas>
+		</div>
+	</div>
+	<div id='puzzle_control'>
+		<a href="javascript:;" id="puzzle_add">
+			<span>添加</span>
+			<input type="file" multiple="" id='puzzle_add_input'>
+		</a
+		><a id='puzzle_upload'>上传</a>
+	</div>
+</div>
+<script type="text/javascript">
+	require('/html5_puzzle');
+</script>
+</body>
+</html>
