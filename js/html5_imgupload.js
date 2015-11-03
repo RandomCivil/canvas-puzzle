@@ -4,6 +4,7 @@ define("html5_imgupload",["avalon-min"], function(avalon){
 	}
 	html5_img_upload.prototype = {
 		init : function(options) {
+			//如果有自定义属性，覆盖默认属性
 			avalon.mix(html5_img_upload.prototype,options);
 			this.init_events();
 		},
@@ -19,7 +20,7 @@ define("html5_imgupload",["avalon-min"], function(avalon){
 		upload_btn:null,
 		max_upload_num:9,
 		onSelect:function(file_filter){},
-		_start:0,
+		_start:0,//已经读取图片数量
 		filter:function(files) {
 			var arrFiles=[];
 			for (var i=0,file;file=files[i];i++){

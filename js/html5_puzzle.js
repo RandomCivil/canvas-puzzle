@@ -26,23 +26,26 @@ define("html5_puzzle",['avalon-min',"/canvasElement",'/canvasImg','html5_imguplo
 		height : canvas_h
 	});
 	function onSelect(file_filter){
-		for(var i=this._start,len=file_filter.length;i<len;i++) {
+		for(var i=this._start,len=file_filter.length;i<len;i++) {//遍历选中图片
 			var reader=new FileReader();
-			reader.onload=(function(i){
+			reader.onload=(function(i){//图片读取的回调
 				return function(e){
 					var dataURL=e.target.result,canvas_middleware=$('canvas_middleware'),
 					ctx=canvas_middleware.getContext('2d'),img=new Image();
-					img.onload = function() {
-						if(img.width>200||img.height>200){
+					img.onload = function() {//图片加载的回调
+						if(img.width>200||img.height>200){//等比例缩放
 							var prop=Math.min(200/img.width,200/img.height);
 							img.width=img.width*prop;
 							img.height=img.height*prop;
 						}
+						//设置中转canvas尺寸
 						canvas_middleware.width=img.width;
 						canvas_middleware.height=img.height;
 						ctx.drawImage(img, 0, 0, img.width, img.height);
+						//将读取图片转换成base64,写入.middleware_list的src
 						html5_puzzle.middleware_list.push(canvas_middleware.toDataURL("image/jpeg"));
 						if(!file_filter[i+1]){
+							//图片延迟加载到canvas,因为canvas有个读取过程，但是没有回调
 							var t = window.setTimeout(function() {
 								if(!update_puzzle)
 									canvas_puzzle.init();
@@ -68,7 +71,7 @@ define("html5_puzzle",['avalon-min',"/canvasElement",'/canvasImg','html5_imguplo
 				};
 				delete reader;
 			})(i);
-			reader.readAsDataURL(file_filter[i]);
+			reader.readAsDataURL(file_filter[i]);//开始读取图片
 		}
 		this._start=0;
 		img_upload_instance._destroy();
@@ -81,27 +84,19 @@ define("html5_puzzle",['avalon-min',"/canvasElement",'/canvasImg','html5_imguplo
 		return {
 			init : function() {
 				var img_list=document.querySelectorAll('.middleware_img');
+				//第一张作为背景图片
 				canvas_img[0]=new canvasImg.Img($('puzzle_bg'), {});
 				avalon.each(img_list,function(i,el){
 					canvas_img.push(new canvasImg.Img(el, {}));
 					canvas.addImage(canvas_img[i+1]);
 				});
 				canvas.setCanvasBackground(canvas_img[0]);
-				this.cornersvisible = (this.cornersvisible) ? false : true;
-				this.modifyImages(function(image) {
-					image.setCornersVisibility(this.cornersvisible);
-				});
-				avalon.bind($('puzzle_upload'),'click',puzzle_upload);
-				$('puzzle_upload').style.display='inline-block';
-			},
-			modifyImages : function(fn) {
-				for ( var i =0, l = canvas._aImages.length; i < l; i += 1) {
-					fn.call(this, canvas._aImages[i]);
-				}
-				canvas.renderAll(false,false);
+				// canvas.renderAll(false,false);
 				html5_puzzle.middleware_list.clear();
 				canvas_img=[];
 				$('puzzle_add_input').value='';
+				avalon.bind($('puzzle_upload'),'click',puzzle_upload);
+				$('puzzle_upload').style.display='inline-block';
 			}
 		};
 	}();
@@ -115,16 +110,13 @@ define("html5_puzzle",['avalon-min',"/canvasElement",'/canvasImg','html5_imguplo
 	}
 	avalon.bind($('puzzle_delete'),'click',function(){
 		canvas._aImages.splice(getCurImg(),1);
-		puzzle_delete();
-	});
-	function puzzle_delete(){
 		canvas.renderAll(false,false);
 		$('canvas_menu').style.display="none";
 		if(canvas._aImages.length==0){
 			$('puzzle_upload').style.display='none';
 			avalon.unbind($('puzzle_upload'),'click',puzzle_upload);
 		}
-	}
+	});
 	avalon.bind($('puzzle_update'),'click',function(){
 		update_puzzle=true;
 		$('puzzle_add_input').click();

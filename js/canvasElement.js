@@ -127,7 +127,7 @@ var Canvas = window.Canvas || {};
 		}
 		var target=this._currentTransform.target;
 		if (target)
-			target.setImageCoords();
+			target.setImageCoords();//重置图片canvas封装
 		if (this._currentTransform != null && this._currentTransform.action == "rotate") {
 			this.onRotateComplete.fire(e);
 		} else if (this._currentTransform != null && this._currentTransform.action == "drag") {
@@ -135,19 +135,19 @@ var Canvas = window.Canvas || {};
 		}
 		this._currentTransform = null;
 		this.renderTop();
-		if(this._aImages.length>0)
+		if(this._aImages.length>0)//没有选中的图片
 			$('canvas_menu').style.display="block";
 	};
 	Canvas.Element.prototype.onMouseDown = function(e) {
 		$('canvas_menu').style.display="none";
-		var mp = this.findMousePosition(e);
+		var mp = this.findMousePosition(e);//鼠标相对位置
 		if (this._currentTransform != null || this._aImages == null) {
 			return;
 		}
-		var oImg = this.findTargetImage(mp, false);
+		var oImg = this.findTargetImage(mp, false);//获取目标图片
 		var action = (!this.findTargetCorner(mp, oImg)) ? 'drag' : 'rotate';
 		if (action == "rotate") {
-			this.onRotateMove.fire(e);
+			this.onRotateMove.fire(e);//触发自定义事件
 		} else if (action == "drag") {
 			this.onDragMove.fire(e);
 		}
@@ -275,7 +275,7 @@ var Canvas = window.Canvas || {};
 		this._oContextTop.clearRect(0,0,parseInt(this._oConfig.width), parseInt(this._oConfig.height));
 		this.drawImageElement(this._oContextTop, this._aImages[this._aImages.length-1],true);
 	};
-	Canvas.Element.prototype.drawImageElement = function(context, oImg,allowCorners) {
+	Canvas.Element.prototype.drawImageElement = function(context,oImg,allowCorners) {
 		if(oImg){
 			oImg.cornervisibility=allowCorners;
 			var offsetY = oImg.height / 2;
@@ -286,17 +286,11 @@ var Canvas = window.Canvas || {};
 			context.scale(oImg.scalex, oImg.scaley);
 			this.drawBorder(context, oImg, offsetX, offsetY);
 			var originalImgSize = oImg.getOriginalSize();
-			var polaroidHeight = ((oImg.height - originalImgSize.height) - (oImg.width - originalImgSize.width))/2;
-			context.drawImage(
-				oImg._oElement, 
-				- originalImgSize.width/2,  
-				((- originalImgSize.height)/2 - polaroidHeight), 
-				originalImgSize.width, 
-				originalImgSize.height
-				);
-			if (oImg.cornervisibility) {
+			var polaroidHeight =((oImg.height-originalImgSize.height)-(oImg.width-originalImgSize.width))/2;
+			context.drawImage(oImg._oElement,-originalImgSize.width/2,(-originalImgSize.height)/2-polaroidHeight, 
+			originalImgSize.width,originalImgSize.height);
+			if (allowCorners)
 				this.drawCorners(context, oImg, offsetX, offsetY);
-			}
 			context.restore();
 		}
 	};
