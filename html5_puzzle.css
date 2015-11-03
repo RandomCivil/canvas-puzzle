@@ -32,7 +32,7 @@ ul,li{
 #puzzle_model li:hover{
 	border:1px solid #009be3;
 }
-#canvas_menu,#puzzle_bg,#canvas_middleware,#puzzle_upload{
+#canvas_menu,#puzzle_bg,#canvas_middleware,#puzzle_upload,.middleware_img{
 	display: none;
 }
 #html5_puzzle>div,#puzzle_model li,#canvas_menu a{

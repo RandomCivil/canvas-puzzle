@@ -367,14 +367,11 @@ var Canvas = window.Canvas || {};
 	};
 	Canvas.Element.prototype.findMousePosition = function(e) {//鼠标相对位置
 		var parentNode = (e.srcElement) ? e.srcElement.parentNode : e.target.parentNode;
-		var isSafari2 = !main.support.ie&&!main.support.firefox;
 		var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
 		var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-		var safariOffsetLeft = (isSafari2) ? e.target.ownerDocument.body.offsetLeft + scrollLeft : 0;
-		var safariOffsetTop = (isSafari2) ? e.target.ownerDocument.body.offsetTop + scrollTop : 0;
 		return {
-			ex: e.clientX + scrollLeft - parentNode.offsetLeft - safariOffsetLeft,
-			ey: e.clientY + scrollTop - parentNode.offsetTop - safariOffsetTop,
+			ex: e.clientX + scrollLeft - parentNode.offsetLeft,
+			ey: e.clientY + scrollTop - parentNode.offsetTop,
 			screenX: e.screenX,
 			screenY: e.screenY
 		};
